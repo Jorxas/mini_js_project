@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .container {
+            background: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 300px;
+        }
+        h1{
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+        
+        #a{
+            width: 60px;
+            padding: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        button{
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            
+        }
+
+        button:hover{
+            background: #2ecc71;
+        }
+
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        p{
+            font-size: 1.2rem;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        #result{
+            display: block;
+            margin-top: 10px;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Devine le Nombre</h1>
+        <p>Entre 1 et 100</p>
+        <input type="number" id="a" placeholder="?">
+        <br>
+        <button class="btn" id="checkBtn">verifier</button>
+        <button class="btn" id="restartBtn" style="display:none;">Rejouer</button>
+        <p><strong>Faites un essai !</strong></p>
+        <span id="result"></span>
+        <P>Tentatives restantes:<span id="counter"></span></P>
+    </div>
+
+    <script>
+        let guesszahl = Math.floor(Math.random() * 100 + 1);
+        console.log(guesszahl);
+
+        let msg = "";
+        let count = 10;
+
+        document.getElementById("counter").textContent = count;
+        document.getElementsByClassName("btn")[0].addEventListener("click", game);
+
+        function game() {
+            let a = document.getElementById("a").value;
+            console.log(a);
+            count -= 1;
+            document.getElementById("counter").textContent = count;
+
+            // Vérification de l'entrée
+            if (isNaN(a) || a < 1 || a > 100) {
+                msg = "⚠️ Entrez un nombre valide (1-100)";
+            }
+
+            if (count == 0) {
+                msg = "Game Over";
+                document.getElementById("checkBtn").disabled = true;
+                document.getElementById("restartBtn").style.display = "inline-block";
+            } else {
+                if (parseInt(a) > guesszahl) {
+                    msg = "📈 Zu hoch";
+                } else if (parseInt(a) < guesszahl) {
+                    msg = "📉 Zu niedrig";
+                } else if (parseInt(a) == guesszahl) {
+                    msg = "🎉Geschafft!";
+                    document.getElementById("restartBtn").style.display = "inline-block";
+                    document.getElementById("checkBtn").disabled = true;
+                }
+            }
+
+            document.getElementById("result").textContent = msg;
+        }
+
+        // Réinitialisation du jeu
+        document.getElementById("restartBtn").addEventListener("click", restart);
+
+        function restart() {
+            count = 10;
+            guesszahl = Math.floor(Math.random() * 100) + 1;
+            console.log(guesszahl);
+
+            document.getElementById("counter").textContent = count;
+            document.getElementById("result").textContent = "";
+            document.getElementById("a").value = "";
+            document.getElementById("checkBtn").disabled = false;
+            document.getElementById("restartBtn").style.display = "none";
+        }
+
+        
+    </script>
+</body>
+</html>
