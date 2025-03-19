@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            
+        }
+        .container{
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+        }
+        button {
+            background: #ff6f61;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #d9534f;
+        }
+    </style>
+<body>
+    <div class="container"> 
+        <h2>🤣 Générateur de Blagues 🤣</h2>
+        <p id="joke">Cliquez sur le bouton pour une blague !</p>
+        <button onclick="getjoke()">Obtenir une blague</button>
+    </div>  
+    <script>
+        async function getjoke(){
+            let response = await fetch('https://official-joke-api.appspot.com/random_joke');
+            let data = await response.json();
+            console.log(data)
+            document.getElementById('joke').innerText = `${data.setup} \n ${data.punchline}`;
+        }
+    </script>
+</body>
+</html>
