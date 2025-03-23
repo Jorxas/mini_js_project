@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Weather</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            color: white;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #ff4d4d;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #ff1a1a;
+        }
+
+        .weather-info {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .weather-info img {
+            width: 100px;
+        }
+
+        .weather-info h3 {
+            font-size: 2rem;
+            margin: 10px 0;
+        }
+
+        .weather-info p {
+            font-size: 1.2rem;
+            margin: 5px 0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🌤️ Real-Time Weather</h2>
+        <input type="text" id="city" placeholder="Please enter a city...">
+        <button onclick="getWeather()">🔍 Search</button>
+
+        <div class="weather-info" id="weather">
+            <h3 id="city-name"></h3>
+            <img id="weather-icon" src="" alt="icone de meteo">
+            <p id="temperature"></p>
+            <p id="description"></p>
+        </div>
+    </div>
+
+    <script>
+       async function getWeather() {
+        let city = document.getElementById("city").value;
+        console.log(city)
+        if(city ===""){
+            alert("entrez une ville")
+            return
+        }
+        const apiKey = "dad187c0384b9a98003bd9f1a030a85d"; // Remplace avec ta clé API OpenWeatherMap
+        let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=fr&appid=${apiKey}`;
+
+        let response= await fetch(url)
+        let data = await response.json();
+        console.log(data)
+
+        if (data.cod !== 200) {
+            alert("City not found!");
+            return;
+        }
+        document.getElementById("city-name").textContent = `${data.name}, ${data.sys.country}`;
+        document.getElementById("temperature").textContent = `🌡️ ${data.main.temp}°C`;
+        document.getElementById("description").textContent = `🌍 ${data.weather[0].description}`;
+        document.getElementById("weather-icon").src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+
+        document.getElementById("weather").style.display = "block";
+       }
+             
+    </script>
+
+</body>
+</html>
