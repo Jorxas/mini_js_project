@@ -1,151 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calculatrice</title>
-  <style>
-    body {
-      background-color: rgb(240, 237, 237);
-    }
-    #calculator {
-      background-color: rgb(66, 63, 63);
-      height: 600px;
-      width: 350px;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      border-radius: 10px;
-      display: grid;
-      grid-template-rows: 1fr 3.5fr;
-    }
-    #screen {
-      background-color: black;
-      border-radius: 10px;
-      margin: 20px;
-      color: white;
-      font-size: 2.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding-right: 10px;
-      overflow-x: auto;
-    }
-    #buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      padding: 0 15px 15px;
-    }
-    .button {
-      border-radius: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      user-select: none;
-    }
-    .number {
-      background-color: gray;
-    }
-    .operator {
-      background-color: rgb(255, 115, 0);
-    }
-    #reset,
-    #undo {
-      background-color: rgb(234, 13, 13);
-    }
-    #result {
-      background-color: rgb(0, 255, 110);
-    }
-    .button:hover {
-      filter: brightness(0.85);
-    }
-  </style>
-</head>
-<body>
-  <div id="calculator">
-    <div id="screen">0</div>
-    <div id="buttons">
-      <div class="button" id="reset">AC</div>
-      <div class="button" id="undo">CE</div>
-      <div class="button operator">%</div>
-      <div class="button operator">/</div>
-      <div class="button number">7</div>
-      <div class="button number">8</div>
-      <div class="button number">9</div>
-      <div class="button operator">*</div>
-      <div class="button number">4</div>
-      <div class="button number">5</div>
-      <div class="button number">6</div>
-      <div class="button operator">-</div>
-      <div class="button number">1</div>
-      <div class="button number">2</div>
-      <div class="button number">3</div>
-      <div class="button operator">+</div>
-      <div class="button number">0</div>
-      <div class="button number">00</div>
-      <div class="button number">.</div>
-      <div class="button" id="result">=</div>
-    </div>
-  </div>
+let operator = ""
+let a = ""
+let b = ""
+let result = ""
+const numbers = document.querySelectorAll(".number")
+const operators = document.querySelectorAll(".operator")
+let reset = document.getElementById("reset")
+let screen = document.getElementById("screen")
 
-  <script>
-    const screen = document.getElementById("screen");
-    const numberButtons = document.querySelectorAll(".number");
-    const operatorButtons = document.querySelectorAll(".operator");
-    const resetButton = document.getElementById("reset");
-    const undoButton = document.getElementById("undo");
-    const resultButton = document.getElementById("result");
+// Fonction pour vérifier la longueur de l'affichage
+function isDisplayFull() {
+    return screen.textContent.length >= 15;
+}
 
-    let expression = "";
+numbers.forEach(number => {
+    number.addEventListener("click", function (e) {
+        if (isDisplayFull()) return; // Ne rien faire si l'affichage est plein
 
-    const updateScreen = () => {
-      // Limite visuelle à 15 caractères affichés
-      screen.textContent = expression.length > 0 ? expression.slice(0, 15) : "0";
-    };
-
-    numberButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        if (expression.length < 30) { // longueur totale de l'expression
-          expression += btn.textContent;
-          updateScreen();
+        if (operator === "") {
+            a = a + e.target.textContent;
+            screen.textContent = a;
+        } else {
+            b = b + e.target.textContent;
+            screen.textContent = a + operator + b;
         }
-      });
-    });
+    })
+})
 
-    operatorButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        const lastChar = expression.slice(-1);
-        if (expression && !"+-*/.%".includes(lastChar)) {
-          expression += btn.textContent;
-          updateScreen();
+operators.forEach(op => {
+    op.addEventListener("click", function (e) {
+        // Bloque si un opérateur est déjà défini ou si rien n'est entré
+        if (operator !== "" || a === "" || isDisplayFull()) return;
+
+        operator = e.target.textContent;
+        screen.textContent = a + operator;
+    })
+})
+
+document.getElementById("reset").addEventListener("click", function () {
+    a = ""
+    b = ""
+    operator = ""
+    result = ""
+    screen.textContent = "0";
+})
+
+document.getElementById("undo").addEventListener("click", function () {
+    let arr = screen.textContent.split("")
+    arr.pop()
+    screen.textContent = arr.join("")
+
+    if (operator === "") {
+        a = screen.textContent
+    } else {
+        b = screen.textContent.replace(a + operator, "")
+    }
+})
+
+document.getElementById("result").addEventListener("click", function () {
+    if (a !== "" && b !== "" && operator !== "") {
+        let result;
+        switch (operator) {
+            case "+":
+                result = parseFloat(a) + parseFloat(b);
+                break;
+            case "-":
+                result = parseFloat(a) - parseFloat(b);
+                break;
+            case "*":
+                result = parseFloat(a) * parseFloat(b);
+                break;
+            case "/":
+                result = parseFloat(a) / parseFloat(b);
+                break;
+            case "%":
+                result = parseFloat(a) % parseFloat(b);
+                break;
+            default:
+                result = 0;
         }
-      });
-    });
+        screen.textContent = result.toString().slice(0, 15);
+        a = result.toString();
+        b = "";
+        operator = "";
+    }
+})
 
-    resetButton.addEventListener("click", () => {
-      expression = "";
-      updateScreen();
-    });
-
-    undoButton.addEventListener("click", () => {
-      expression = expression.slice(0, -1);
-      updateScreen();
-    });
-
-    resultButton.addEventListener("click", () => {
-      try {
-        const evalResult = eval(expression);
-        expression = String(evalResult);
-        updateScreen();
-      } catch (error) {
-        expression = "";
-        screen.textContent = "Erreur";
-      }
-    });
-  </script>
-</body>
-</html>
 
