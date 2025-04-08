@@ -28,39 +28,39 @@
       font-size: 2.5rem;
       display: flex;
       align-items: center;
-      justify-content: right;
+      justify-content: flex-end;
       padding-right: 10px;
       overflow-x: auto;
     }
     #buttons {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      color: white;
+      grid-template-columns: repeat(4, 1fr);
       gap: 10px;
       padding: 0 15px 15px;
     }
-    .button:hover,
-    #reset:hover {
-      filter: brightness(0.8);
-    }
-    .number, .operator, #reset, #undo, #result {
+    .button {
       border-radius: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
+      user-select: none;
     }
     .number {
       background-color: gray;
+    }
+    .operator {
+      background-color: rgb(255, 115, 0);
     }
     #reset,
     #undo {
       background-color: rgb(234, 13, 13);
     }
-    .operator {
-      background-color: rgb(255, 115, 0);
-    }
     #result {
       background-color: rgb(0, 255, 110);
+    }
+    .button:hover {
+      filter: brightness(0.85);
     }
   </style>
 </head>
@@ -93,58 +93,59 @@
 
   <script>
     const screen = document.getElementById("screen");
-    const numbers = document.querySelectorAll(".number");
-    const operators = document.querySelectorAll(".operator");
-    const reset = document.getElementById("reset");
-    const undo = document.getElementById("undo");
-    const resultBtn = document.getElementById("result");
+    const numberButtons = document.querySelectorAll(".number");
+    const operatorButtons = document.querySelectorAll(".operator");
+    const resetButton = document.getElementById("reset");
+    const undoButton = document.getElementById("undo");
+    const resultButton = document.getElementById("result");
 
     let expression = "";
 
-    function updateScreen() {
-      screen.textContent = expression || "0";
-    }
+    const updateScreen = () => {
+      // Limite visuelle à 15 caractères affichés
+      screen.textContent = expression.length > 0 ? expression.slice(0, 15) : "0";
+    };
 
-    numbers.forEach((btn) => {
+    numberButtons.forEach(btn => {
       btn.addEventListener("click", () => {
-        if (expression.length < 15) {
+        if (expression.length < 30) { // longueur totale de l'expression
           expression += btn.textContent;
           updateScreen();
         }
       });
     });
 
-    operators.forEach((btn) => {
+    operatorButtons.forEach(btn => {
       btn.addEventListener("click", () => {
         const lastChar = expression.slice(-1);
-        if (expression && !"+-*/%".includes(lastChar)) {
+        if (expression && !"+-*/.%".includes(lastChar)) {
           expression += btn.textContent;
           updateScreen();
         }
       });
     });
 
-    reset.addEventListener("click", () => {
+    resetButton.addEventListener("click", () => {
       expression = "";
       updateScreen();
     });
 
-    undo.addEventListener("click", () => {
+    undoButton.addEventListener("click", () => {
       expression = expression.slice(0, -1);
       updateScreen();
     });
 
-    resultBtn.addEventListener("click", () => {
+    resultButton.addEventListener("click", () => {
       try {
-        let result = eval(expression);
-        result = String(result).slice(0, 15); // limiter l'affichage
-        expression = result;
+        const evalResult = eval(expression);
+        expression = String(evalResult);
         updateScreen();
-      } catch {
-        screen.textContent = "Erreur";
+      } catch (error) {
         expression = "";
+        screen.textContent = "Erreur";
       }
     });
   </script>
 </body>
 </html>
+
