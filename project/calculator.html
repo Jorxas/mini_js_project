@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Taschenrechner</title>
     <style>
         body{
             background-color: rgb(240, 237, 237);
@@ -15,7 +15,7 @@
             position: fixed;
             top: 50%; 
             left: 50%; 
-            transform: translate(-50%, -50%); /* Décale l'image de 50% de sa propre taille */
+            transform: translate(-50%, -50%); /* Zentriert den Taschenrechner auf dem Bildschirm */
             border-radius: 10px;
             display: grid;
             grid-template-rows: 1fr 3.5fr ;
@@ -74,15 +74,14 @@
     </style>
 </head>
 <body>
-    <p></p>
     <div id="calculator">
         <div id="screen">0</div>
         <div id="buttons">
             <div class="button" id="reset">AC</div>
-            <div class="button " id ="undo" >CE</div>
+            <div class="button" id="undo">CE</div>
             <div class="button operator">%</div>
             <div class="button operator">/</div>
-            <div class="button number" >7</div>
+            <div class="button number">7</div>
             <div class="button number">8</div>
             <div class="button number">9</div>
             <div class="button operator">*</div>
@@ -102,23 +101,27 @@
     </div>
 
     <script>
+        // Variablen für die Taschenrechner-Logik
         let operator = ""
         let a = ""
         let b = ""
         let result = ""
+        
+        // DOM-Elemente abrufen
         const numbers = document.querySelectorAll(".number")
         const operators = document.querySelectorAll(".operator")
         let reset = document.getElementById("reset")
         let screen = document.getElementById("screen")
 
-        // Fonction pour vérifier la longueur de l'affichage
+        // Funktion zur Überprüfung der Anzeigelänge
         function isDisplayFull() {
             return screen.textContent.length >= 15;
         }
 
+        // Event-Listener für Zahlen hinzufügen
         numbers.forEach(number => {
             number.addEventListener("click", function (e) {
-                if (isDisplayFull()) return; // Ne rien faire si l'affichage est plein
+                if (isDisplayFull()) return; // Nichts tun wenn die Anzeige voll ist
 
                 if (operator === "") {
                     a = a + e.target.textContent;
@@ -130,9 +133,10 @@
             })
         })
 
+        // Event-Listener für Operatoren hinzufügen
         operators.forEach(op => {
             op.addEventListener("click", function (e) {
-                // Bloque si un opérateur est déjà défini ou si rien n'est entré
+                // Blockieren wenn bereits ein Operator gesetzt ist oder nichts eingegeben wurde
                 if (operator !== "" || a === "" || isDisplayFull()) return;
 
                 operator = e.target.textContent;
@@ -140,6 +144,7 @@
             })
         })
 
+        // Reset-Button Event-Listener
         document.getElementById("reset").addEventListener("click", function () {
             a = ""
             b = ""
@@ -148,6 +153,7 @@
             screen.textContent = "0";
         })
 
+        // Undo-Button Event-Listener
         document.getElementById("undo").addEventListener("click", function () {
             let arr = screen.textContent.split("")
             arr.pop()
@@ -160,6 +166,7 @@
             }
         })
 
+        // Ergebnis-Button Event-Listener
         document.getElementById("result").addEventListener("click", function () {
             if (a !== "" && b !== "" && operator !== "") {
                 let result;
@@ -174,6 +181,11 @@
                         result = parseFloat(a) * parseFloat(b);
                         break;
                     case "/":
+                        // Division durch Null verhindern
+                        if (parseFloat(b) === 0) {
+                            screen.textContent = "Fehler";
+                            return;
+                        }
                         result = parseFloat(a) / parseFloat(b);
                         break;
                     case "%":
@@ -182,6 +194,8 @@
                     default:
                         result = 0;
                 }
+                
+                // Ergebnis auf 15 Zeichen begrenzen und anzeigen
                 screen.textContent = result.toString().slice(0, 15);
                 a = result.toString();
                 b = "";
