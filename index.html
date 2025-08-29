@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Mini Apps Collection - Centre de Jeux</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px 0;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .app-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .app-card:hover::before {
+            left: 100%;
+        }
+
+        .app-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .app-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .app-card p {
+            color: #718096;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .app-icon {
+            font-size: 2rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .app-status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .status-working {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-api {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .open-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .open-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .open-btn:active {
+            transform: translateY(0);
+        }
+
+        .footer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            text-align: center;
+            color: white;
+            margin-top: 50px;
+        }
+
+        .footer p {
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .header p {
+                font-size: 1.1rem;
+            }
+            
+            .apps-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .app-card {
+                padding: 25px;
+            }
+        }
+
+        /* Animation d'entrée */
+        .app-card {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .app-card:nth-child(1) { animation-delay: 0.1s; }
+        .app-card:nth-child(2) { animation-delay: 0.2s; }
+        .app-card:nth-child(3) { animation-delay: 0.3s; }
+        .app-card:nth-child(4) { animation-delay: 0.4s; }
+        .app-card:nth-child(5) { animation-delay: 0.5s; }
+        .app-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Effet de particules en arrière-plan */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particules en arrière-plan -->
+    <div class="particles" id="particles"></div>
+
+    <div class="header">
+        <h1>🎮 Mini Apps Collection</h1>
+        <p>Centre de Jeux et d'Outils Interactifs</p>
+    </div>
+
+    <div class="container">
+        <div class="apps-grid">
+            <div class="app-card" onclick="openApp('project/calculator.html', 'Taschenrechner')">
+                <div class="app-status status-working">✅ Fonctionnel</div>
+                <h3><span class="app-icon">🧮</span> Calculatrice</h3>
+                <p>Calculatrice complète avec toutes les opérations mathématiques de base. Interface moderne avec écran LCD et boutons colorés.</p>
+                <button class="open-btn" onclick="event.stopPropagation(); openApp('project/calculator.html', 'Taschenrechner')">
+                    🚀 Ouvrir l'Application
+                </button>
+            </div>
+
+            <div class="app-card" onclick="openApp('project/CountdownTimer.html', 'Countdown Timer')">
+                <div class="app-status status-working">✅ Funktional</div>
+                <h3><span class="app-icon">⏰</span> Countdown Timer</h3>
+                <p>Anpassbarer Timer mit Start-, Pause- und Reset-Steuerung. Perfekt für Arbeits- oder Sporteinheiten.</p>
+                <button class="open-btn" onclick="event.stopPropagation(); openApp('project/CountdownTimer.html', 'Countdown Timer')">
+                    🚀 Anwendung öffnen
+                </button>
+            </div>
+
+            <div class="app-card" onclick="openApp('project/CurrencyConverter.html', 'Währungsrechner')">
+                <div class="app-status status-working">✅ Funktional</div>
+                <h3><span class="app-icon">💱</span> Währungsrechner</h3>
+                <p>Echtzeit-Währungsumrechner mit aktuellen Wechselkursen. Unterstützt alle Weltwährungen über API.</p>
+                <button class="open-btn" onclick="event.stopPropagation(); openApp('project/CurrencyConverter.html', 'Währungsrechner')">
+                    🚀 Anwendung öffnen
+                </button>
+            </div>
+
+            <div class="app-card" onclick="openApp('project/jokegenerator.html', 'Witz-Generator')">
+                <div class="app-status status-working">✅ Funktional</div>
+                <h3><span class="app-icon">😄</span> Witz-Generator</h3>
+                <p>Entdecken Sie lustige Witze auf Englisch mit einem einfachen Klick. Farbige Benutzeroberfläche und flüssige Animationen.</p>
+                <button class="open-btn" onclick="event.stopPropagation(); openApp('project/jokegenerator.html', 'Witz-Generator')">
+                    🚀 Anwendung öffnen
+                </button>
+            </div>
+
+            <div class="app-card" onclick="openApp('project/lifeweather.html', 'Wetter App')">
+                <div class="app-status status-api">⚠️ API-Schlüssel erforderlich</div>
+                <h3><span class="app-icon">🌤️</span> Echtzeit-Wetter</h3>
+                <p>Prüfen Sie das aktuelle Wetter in jeder Stadt der Welt. Benötigt einen OpenWeatherMap API-Schlüssel.</p>
+                <button class="open-btn" onclick="event.stopPropagation(); openApp('project/lifeweather.html', 'Wetter App')">
+                    🚀 Anwendung öffnen
+                </button>
+            </div>
+
+            <div class="app-card" onclick="openApp('project/numberguesser.html', 'Zahlenraten')">
+                <div class="app-status status-working">✅ Funktional</div>
+                <h3><span class="app-icon">🎯</span> Zahlenraten</h3>
+                <p>Interaktives Ratespiel: Finden Sie die mysteriöse Zahl in maximal 10 Versuchen. Dunkle und moderne Benutzeroberfläche.</p>
+                <button class="open-btn" onclick="event.stopPropagation(); openApp('project/numberguesser.html', 'Zahlenraten')">
+                    🚀 Anwendung öffnen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>🎮 Développé avec ❤️ - Collection de Mini Applications JavaScript</p>
+    </div>
+
+    <script>
+        // Fonction pour ouvrir une application dans un nouvel onglet
+        function openApp(url, title) {
+            const newTab = window.open(url, '_blank');
+            
+            if (newTab) {
+                newTab.focus();
+            } else {
+                alert('Veuillez autoriser les popups pour cette page afin d\'ouvrir les applications.');
+            }
+        }
+
+        // Création des particules en arrière-plan
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Taille aléatoire
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                // Position aléatoire
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                
+                // Animation delay aléatoire
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Animation d'entrée des cartes
+        function animateCards() {
+            const cards = document.querySelectorAll('.app-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }
+
+        // Initialisation
+        window.onload = function() {
+            createParticles();
+            animateCards();
+        };
+
+        // Effet de hover amélioré pour les cartes
+        document.querySelectorAll('.app-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
