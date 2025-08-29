@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Weather</title>
+    <title>Wetter App</title>
     <style>
         * {
             margin: 0;
@@ -85,35 +85,36 @@
 <body>
 
     <div class="container">
-        <h2>🌤️ Real-Time Weather</h2>
-        <input type="text" id="city" placeholder="Please enter a city...">
-        <button onclick="getWeather()">🔍 Search</button>
+        <h2>🌤️ Echtzeit-Wetter</h2>
+        <input type="text" id="city" placeholder="Stadt eingeben...">
+        <button onclick="getWeather()">🔍 Suchen</button>
 
         <div class="weather-info" id="weather">
             <h3 id="city-name"></h3>
-            <img id="weather-icon" src="" alt="icone de meteo">
+            <img id="weather-icon" src="" alt="Wetter-Symbol">
             <p id="temperature"></p>
             <p id="description"></p>
         </div>
     </div>
 
     <script>
+       // Funktion zum Abrufen der Wetterdaten
        async function getWeather() {
         let city = document.getElementById("city").value;
         console.log(city)
         if(city ===""){
-            alert("entrez une ville")
+            alert("Bitte geben Sie eine Stadt ein")
             return
         }
         const apiKey = "your OpenWeatherMap API key"; 
-        let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=fr&appid=${apiKey}`;
+        let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=de&appid=${apiKey}`;
 
         let response= await fetch(url)
         let data = await response.json();
         console.log(data)
 
         if (data.cod !== 200) {
-            alert("City not found!");
+            alert("Stadt nicht gefunden!");
             return;
         }
         document.getElementById("city-name").textContent = `${data.name}, ${data.sys.country}`;

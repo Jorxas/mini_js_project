@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Währungsrechner</title>
 </head>
     <style>
         body {
@@ -44,14 +44,15 @@
 <body>
 
     <div class="container">
-        <h1>Convertisseur de Devises</h1>
-        <input type="number" name="value" placeholder="Montant" id="value">
+        <h1>Währungsrechner</h1>
+        <input type="number" name="value" placeholder="Betrag" id="value">
         <select name="form" id="formd"></select>
         <select name="to" id="tod"></select>
-        <button onclick="converter()" >Convertir</button>
-        <p>Resulstat: <span id="result"> -</span> </p>
+        <button onclick="converter()" >Umrechnen</button>
+        <p>Ergebnis: <span id="result"> -</span> </p>
     </div>
     <script>
+        // Funktion zum Laden der Währungen
         async function loadCurrencies (){
             let response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
             let data = await response.json();
@@ -69,6 +70,7 @@
             })
         }
 
+        // Funktion zur Währungsumrechnung
         async function converter(){
             let amount = document.getElementById("value").value;
            
@@ -79,7 +81,7 @@
             let rate = data.rates[to];
 
             if (amount === "" || amount <= 0) {
-                alert("Veuillez entrer un montant valide.");
+                alert("Bitte geben Sie einen gültigen Betrag ein.");
                 return;
             }
 
@@ -87,6 +89,8 @@
             console.log(convertedAmount)
             document.getElementById('result').innerText = `${convertedAmount} ${to}`;
         }
+        
+        // Währungen beim Laden der Seite laden
         loadCurrencies ();
     </script>
 </body>

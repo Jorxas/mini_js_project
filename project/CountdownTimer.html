@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Countdown Timer</title>
     <style>
         body{
             background: linear-gradient(to right, #ff7e5f, #feb47b);
@@ -28,7 +28,7 @@
             transition: 0.2s;
         }
         #input{
-            width: 40px;
+            width: 80px;
             font-size: 20px;
             text-align: center;
             border: 1px solid #ccc;
@@ -45,6 +45,7 @@
             font-size: 2.5rem;
             font-weight: bold;
             margin-top: 10px;
+            font-family: 'Courier New', monospace;
         }
         .buttons{
             display: flex;
@@ -54,16 +55,17 @@
         .start { background: #28a745; color: white; }
         .pause { background: #ffc107; color: black; }
         .reset { background: #dc3545; color: white; }
+        .set { background: #17a2b8; color: white; }
        
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Compte a Rebours</h1>
-        <p>Entrez le temps en secondes :</p>
+        <h1>Countdown Timer</h1>
+        <p>Zeit in Sekunden eingeben:</p>
         <div class="inputs">
-        <input type="number" id="input">
-        <button class="set">✅</button>
+        <input type="number" id="input" placeholder="60">
+        <button class="set">✅ Setzen</button>
         </div>
         <div class="chrono">00:00</div>
         <div class="buttons">
@@ -73,78 +75,97 @@
         </div>
     </div>
     <script>
-        
+        // Variablen für den Countdown Timer
         let set = document.getElementsByClassName("set")[0];
         let chrono = document.getElementsByClassName("chrono")[0];
-        let min ="";
-        let sec ="";
-        set.addEventListener("click", getchrono)
-        function getchrono(){
-            let input = document.getElementById("input").value;
-            if(input<10){
-                min = "00" 
-                sec = "0"+input
-            }else if(9<input && input<60){
-                min = "00" 
-                sec = input
-            }else if(input>60){
-                if((input/60)<10){
-                    min = "0" + (Math.floor(input/60))
-                }else{
-                    min = Math.floor(input/60)
-                }
-                if((input%60)<10){
-                    sec="0"+ (input%60)
-                }else{
-                    sec = input%60;
-                }
-            }
-            chrono.textContent = min + ":"+sec
-            console.log(input)
-        }
-        let interval="";
         let start = document.getElementsByClassName("start")[0];
-        start.addEventListener("click",function(){
-        interval= setInterval(timer,1000)}  )
-
-        function timer() {
-            let chrono = document.getElementsByClassName("chrono")[0];
-            let arr = chrono.textContent.split(""); 
-            let min = parseInt(arr[0] + arr[1]);
-            let sec = parseInt(arr[3] + arr[4]);
-
-            if (min == 0 && sec == 0) {
-                clearInterval(interval); 
-                chrono.textContent = "00:00"; 
-                alert("Time is off");
-                return
+        let pause = document.getElementsByClassName("pause")[0];
+        let reset = document.getElementsByClassName("reset")[0];
+        
+        let interval = "";
+        let currentTime = 0; // Zeit in Sekunden
+        
+        // Event-Listener für den Set-Button
+        set.addEventListener("click", setTime);
+        
+        // Funktion zum Setzen der Zeit
+        function setTime(){
+            let input = document.getElementById("input").value;
+            
+            if (input === "" || input <= 0) {
+                alert("Bitte geben Sie eine gültige Zeit ein!");
+                return;
             }
-            if (sec === 0) {
-            if (min > 0) {
-                min--; 
-                sec = 59; 
-                }
-            } else {
-            sec--; 
-            }
-            let displayMin = min < 10 ? '0' + min : min;
-            let displaySec = sec < 10 ? '0' + sec : sec;
+            
+            currentTime = parseInt(input);
+            updateDisplay();
+            console.log("Zeit gesetzt:", currentTime, "Sekunden");
+        }
+        
+        // Funktion zum Aktualisieren der Anzeige
+        function updateDisplay() {
+            let minutes = Math.floor(currentTime / 60);
+            let seconds = currentTime % 60;
+            
+            let displayMin = minutes < 10 ? '0' + minutes : minutes;
+            let displaySec = seconds < 10 ? '0' + seconds : seconds;
+            
             chrono.textContent = displayMin + ":" + displaySec;
         }
+        
+        // Event-Listener für Start-Button
+        start.addEventListener("click", startTimer);
 
-        let pause = document.getElementsByClassName("pause")[0];
-        pause.addEventListener("click", function () {
-            clearInterval(interval); 
+        // Timer-Funktion starten
+        function startTimer() {
+            if (currentTime <= 0) {
+                alert("Bitte setzen Sie zuerst eine Zeit!");
+                return;
+            }
+            
+            if (interval) {
+                clearInterval(interval);
+            }
+            
+            interval = setInterval(timer, 1000);
+        }
+
+        // Timer-Funktion
+        function timer() {
+            if (currentTime <= 0) {
+                clearInterval(interval);
+                chrono.textContent = "00:00";
+                alert("Zeit ist abgelaufen!");
+                return;
+            }
+            
+            currentTime--;
+            updateDisplay();
+        }
+
+        // Event-Listener für Pause-Button
+        pause.addEventListener("click", pauseTimer);
+        
+        function pauseTimer() {
+            clearInterval(interval);
+        }
+
+        // Event-Listener für Reset-Button
+        reset.addEventListener("click", resetTimer);
+        
+        function resetTimer() {
+            clearInterval(interval);
+            currentTime = 0;
+            updateDisplay();
+            document.getElementById("input").value = "";
+        }
+        
+        // Enter-Taste für Setzen
+        document.getElementById("input").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                setTime();
+            }
         });
-
-        
-        let reset = document.getElementsByClassName("reset")[0];
-        reset.addEventListener("click", function () {
-            clearInterval(interval);  
-            chrono.textContent = "00:00";  
-            document.getElementById("input").value = ""; 
-        
-        })
 
     </script>
 </body>
