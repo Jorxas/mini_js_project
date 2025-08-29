@@ -12,9 +12,6 @@
 cd mini_js_project
 
 # Lokalen Server starten (PowerShell)
-python -m http.server 8000
-
-# Oder mit Node.js falls verfügbar
 npx http-server -p 8000
 ```
 
